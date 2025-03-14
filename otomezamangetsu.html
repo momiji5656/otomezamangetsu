@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>乙女座の満月・皆既月食 グラフィックレコーディング</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kaisei+Decol&family=Yomogi&family=Zen+Kurenaido&display=swap');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+
+        :root {
+            --theme-1: #9C27B0; /* 紫 */
+            --theme-2: #673AB7; /* 濃い紫 */
+            --theme-3: #E1BEE7; /* 薄い紫 */
+            --theme-4: #3F51B5; /* 藍色 */
+            --theme-5: #B39DDB; /* 薄い紫青 */
+        }
+
+        body {
+            /* 手書き風グリッドライン背景 */
+            background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h100v100H0z" fill="none"/><path d="M0 10h100M10 0v100" stroke="%23e0e0e0" stroke-width="0.5" stroke-dasharray="2,3"/></svg>');
+            background-size: 30px 30px;
+            background-color: #f9f7f1;
+            overflow-x: hidden;
+            font-family: 'Zen Kurenaido', 'Yomogi', 'Kaisei Decol', sans-serif;
+            color: #334155;
+            line-height: 1.4;
+        }
+
+        .container {
+            max-width: 2000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .title-container {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .main-title {
+            font-size: 52px;
+            font-weight: bold;
+            margin: 0;
+            font-family: 'Kaisei Decol', serif;
+            background: linear-gradient(to right, var(--theme-1), var(--theme-4), var(--theme-2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+            padding: 10px 20px;
+            position: relative;
+        }
+
+        .title-icon-left {
+            position: absolute;
+            left: 30%;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 40px;
+            color: var(--theme-1);
+            animation: twinkle 2s infinite alternate;
+        }
+
+        .title-icon-right {
+            position: absolute;
+            right: 30%;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 40px;
+            color: var(--theme-2);
+            animation: twinkle 2s infinite alternate;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: #475569;
+            margin-top: 10px;
+            font-family: 'Yomogi', cursive;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 30px;
+        }
+
+        .card {
+            background-color: transparent;
+            padding: 15px;
+            border-radius: 15px;
+            position: relative;
+            margin-bottom: 40px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .section-title {
+            font-size: 22px;
+            color: #1e40af;
+            margin-bottom: 15px;
+            font-family: 'Kaisei Decol', serif;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 10px;
+            font-size: 24px;
+            color: var(--theme-1);
+            animation: bounce 2s infinite;
+        }
+
+        .icon-large {
+            font-size: 70px;
+            display: block;
+            margin: 15px auto;
+            text-align: center;
+            color: var(--theme-2);
+        }
+
+        .speech-bubble {
+            position: relative;
+            background-color: rgba(225, 190, 231, 0.2);
+            border-radius: 15px;
+            padding: 12px;
+            margin: 15px 0;
+            font-family: 'Yomogi', cursive;
+        }
+
+        .speech-bubble:after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50px;
+            border-width: 15px 15px 0;
+            border-style: solid;
+            border-color: rgba(225, 190, 231, 0.2) transparent;
+        }
+
+        .comparison-wrapper {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+        }
+
+        .comparison-item {
+            background-color: rgba(179, 157, 219, 0.1);
+            padding: 10px;
+            border-radius: 10px;
+            width: 48%;
+            font-family: 'Zen Kurenaido', sans-serif;
+        }
+
+        .highlight-box {
+            border-left: 3px solid var(--theme-5);
+            padding-left: 10px;
+            background-color: rgba(225, 190, 231, 0.1);
+            margin: 15px 0;
+        }
+
+        .keyword {
+            font-weight: bold;
+            color: var(--theme-2);
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .keyword i, .keyword span {
+            margin-right: 5px;
+            font-size: 0.8em;
+        }
+
+        .custom-svg {
+            width: 70px;
+            height: auto;
+            display: block;
+            margin: 15px auto;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.7; transform: translateY(-50%) scale(0.9); }
+            100% { opacity: 1; transform: translateY(-50%) scale(1.1); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        /* メディアクエリ */
+        @media (max-width: 1600px) {
+            .grid-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .main-title {
+                font-size: 42px;
+            }
+            .title-icon-left {
+                left: 20%;
+            }
+            .title-icon-right {
+                right: 20%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .main-title {
+                font-size: 32px;
+            }
+            .title-icon-left {
+                left: 5%;
+            }
+            .title-icon-right {
+                right: 5%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+            .main-title {
+                font-size: 28px;
+            }
+            .title-icon-left, .title-icon-right {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title-container">
+            <i class="fas fa-moon title-icon-left"></i>
+            <h1 class="main-title">乙女座の満月・皆既月食</h1>
+            <i class="fas fa-star title-icon-right"></i>
+            <p class="subtitle"><i class="fas fa-calendar-alt"></i> 2025年3月14日 アストロジー解説</p>
+        </div>
+
+        <div class="grid-container">
+            <!-- カード1: 乙女座の満月・皆既月食とは -->
+            <div class="card">
+                <h2 class="section-title"><i class="fas fa-eclipse"></i>乙女座の満月・皆既月食とは</h2>
+                <i class="fas fa-moon-stars icon-large"></i>
+                <p>今回は<span class="keyword"><i class="fas fa-check-circle"></i>ただの満月ではなく</span>「皆既月食」で、2025年の中でも<span class="keyword"><i class="fas fa-crown"></i>一番大きなイベント</span>です。</p>
+                <div class="speech-bubble">
+                    月食・日食は、新月・満月の<span class="keyword">「何十倍にもなる大きいバージョン」</span>と考えてください！
+                </div>
+                <p>満月は通常でも「<span class="keyword"><i class="fas fa-hand-sparkles"></i>何かを手放す時</span>」「満期を迎える時」「完了する時」ですが、今回の月食ではそのエネルギーが<span class="keyword">通常よりもさらに強く</span>なっています。</p>
+            </div>
+
+            <!-- カード2: 乙女座のエネルギー -->
+            <div class="card">
+                <h2 class="section-title"><i class="fas fa-female"></i>乙女座のエネルギー</h2>
+                <i class="fas fa-heartbeat icon-large"></i>
+                <p>乙女座は12サインの中でも<span class="keyword"><i class="fas fa-heart"></i>健康</span>や<span class="keyword"><i class="fas fa-briefcase"></i>労働</span>を司るサインです。</p>
+                <div class="highlight-box">
+                    <p>この乙女座の満月では、健康面や労働に関して何か大きな節目や変化が起こることが考えられます。</p>
+                </div>
+                <p>普段の生活の中での<span class="keyword"><i class="fas fa-sync-alt"></i>ルーティン</span>、日常生活での仕事の仕方、日々の体調や精神の整え方などを見直すタイミングでもあります。</p>
+            </div>
+
+            <!-- カード3: 今回の満月・皆既月食の構造 -->
+            <div class="card">
+                <h2 class="section-title"><i class="fas fa-project-diagram"></i>今回の満月・皆既月食の構造</h2>
+                <i class="fas fa-sun icon-large"></i>
+                <div class="comparison-wrapper">
+                    <div class="comparison-item">
+                        <p><i class="fas fa-sun"></i> 太陽：魚座</p>
+                        <p>土星とコンジャンクション</p>
+                    </div>
+                    <div class="comparison-item">
+                        <p><i class="fas fa-moon"></i> 月：乙女座</p>
+                        <p>太陽と180度の角度</p>
+                    </div>
+                </div>
+                <p>今回は<span class="keyword"><i class="fas fa-rings-wedding"></i>土星のエネルギー</span>が非常に強い皆既月食です。土星は「学びの星」「チャレンジの星」とも呼ばれ、現実的に見直さなければいけないことをもたらすことが多いです。</p>
+                <div class="speech-bubble">
+                    一見チャレンジに見えても、長期的には「半永久的な成功」をもたらしてくれる星でもあります！
+                </div>
+            </div>
+
+            <!-- カード4: エネルギーを上手に活かすヒント -->
+            <div class="card">
+                <h2 class="section-title"><i class="fas fa-lightbulb"></i>エネルギーを上手に活かすヒント</h2>
+                <i class="fas fa-bolt icon-large"></i>
+                <p>今回は<span class="keyword"><i class="fas fa-random"></i>天王星</span>のエネルギーを上手く使うことが重要なキーになります。</p>
+                <div class="highlight-box">
+                    <ul>
+                        <li>いつもと違うことを生活に取り入れる</li>
+                        <li>新しいテクノロジー（AIやアプリ）を活用</li>
+                        <li>普段コラボしない相手と組んでみる</li>
+                        <li>環境を変えてみる</li>
+                    </ul>
+                </div>
+                <p>このように<span class="keyword"><i class="fas fa-glasses"></i>環境や視点を変える</span>ことで、新たな習慣や仕事の仕方を試行錯誤し、その中から自分に合うものを見つけて習慣化していくと、大きなパワーを発揮できます。</p>
+            </div>
+
+            <!-- カード5: 水星逆行＆金星逆行の影響 -->
+            <div class="card">
+                <h2 class="section-title"><i class="fas fa-undo-alt"></i>水星逆行＆金星逆行の影響</h2>
+                <i class="fas fa-sync icon-large"></i>
+                <div class="comparison-wrapper">
+                    <div class="comparison-item">
+                        <p><i class="fas fa-mercury"></i> 水星逆行</p>
+                        <p>3/14〜4/7頃</p>
+                        <p>コミュニケーション・交通・電子機器に混乱</p>
+                    </div>
+                    <div class="comparison-item">
+                        <p><i class="fas fa-venus"></i> 金星逆行</p>
+                        <p>3/2〜4/13頃</p>
+                        <p>恋愛・金銭・美容の見直し</p>
+                    </div>
+                </div>
+                <div class="speech-bubble">
+                    焦らず、一度立ち止まって見直す時期です。「もう一度見つめ直して磨き直してほしい」という宇宙からのメッセージ💫
+                </div>
+            </div>
+
+            <!-- カード6: 牡羊座での水星逆行・金星逆行 -->
+            <div class="card">
+                <h2 class="section-title"><i class="fas fa-fire"></i>牡羊座での水星逆行・金星逆行</h2>
+                <i class="fas fa-user-circle icon-large"></i>
+                <p>今回の水星逆行と金星逆行は、<span class="keyword"><i class="fas fa-ram"></i>牡羊座</span>の7度～9度あたりで起こっています。牡羊座は「自分が誰であるか」というアイデンティティに関わるサインです。</p>
+                <div class="highlight-box">
+                    <p>「周りが求める自分」ではなく、本当の意味で自分が喜びを感じて楽しく生きていける自分はどんな姿なのかをもう一度見直す時期です。</p>
+                </div>
+            </div>
+
+            <!-- カード7: 魚座のエネルギー（海王星）も強い時期 -->
+            <div class="card">
+                <h2 class="section-title"><i class="fas fa-water"></i>魚座のエネルギー（海王星）も強い時期</h2>
+                <i class="fas fa-tint icon-large"></i>
+                <p>月食・日食が重なるこの時期、<span class="keyword"><i class="fas fa-swimming-pool"></i>海王星</span>や魚座のエネルギーも非常に強まっています。特に海王星はドラゴンヘッドとコンジャンクションを形成しています。</p>
+                <div class="speech-bubble">
+                    お風呂やアロマ、スチームルームなど「水」や「液体」に関するヒーリングがとてもおすすめです。
+                </div>
+                <p><span class="keyword"><i class="fas fa-music"></i>芸術や音楽</span>、<span class="keyword"><i class="fas fa-paint-brush"></i>ダンス</span>、<span class="keyword"><i class="fas fa-palette"></i>絵画</span>などのクリエイティブな活動も魚座や海王星のエネルギーとは相性が良いため、ぜひ上手に活用してみてください。</p>
+            </div>
+
+            <!-- カード8: 引き寄せ体質になるための「習慣化」の重要性 -->
+            <div class="card">
+                <h2 class="section-title"><i class="fas fa-magic"></i>引き寄せ体質になるための「習慣化」</h2>
+                <i class="fas fa-seedling icon-large"></i>
+                <p>大きな引き寄せが起こるためには、<span class="keyword"><i class="fas fa-calendar-check"></i>毎日の習慣</span>が大きく関わってきます。私たちの行動の95％は無意識的な習慣から来ています。</p>
+                <div class="comparison-wrapper">
+                    <div class="comparison-item">
+                        <p><i class="fas fa-book"></i> 感謝日記</p>
+                        <p>毎朝3〜10個の感謝を書く</p>
+                        <p>叶えたい夢も「過去形」で書く</p>
+                    </div>
+                    <div class="comparison-item">
+                        <p><i class="fas fa-pray"></i> 朝夜の瞑想</p>
+                        <p>潜在意識にアクセスしやすい時間</p>
+                        <p>誘導瞑想で始めると取り組みやすい</p>
+                    </div>
+                </div>
+                <div class="highlight-box">
+                    <p>ポイントは「感謝している理由」を書くことと、その感謝を実際に「感じる」こと。声に出して読み上げて「ありがとう！」と心から思えるようにすると、引き寄せが加速します。</p>
+                </div>
+            </div>
+
+            <!-- カード9: 引き寄せの実例 -->
+            <div class="card">
+                <h2 class="section-title"><i class="fas fa-star"></i>引き寄せの実例</h2>
+                <i class="fas fa-bullseye icon-large"></i>
+                <p>大きな夢を実現するコツとして、「<span class="keyword"><i class="fas fa-clipboard-list"></i>ビジョンボード</span>」の活用があります。実際にマディソン・スクエア・ガーデンでのジブリ映画関連ショーへの出演も、事前にビジョンボードに載せていました。</p>
+                <div class="speech-bubble">
+                    「私はこうなりました」と過去形で書いてイメージし、それに対して「もう叶った！」と感謝する習慣で驚くほど早く実現しました！
+                </div>
+                <p>これこそが「<span class="keyword"><i class="fas fa-heart"></i>自分の未来に感謝する</span>」習慣の効果で、アストロジーやコーチングを通じて自分を常に見つめ直しているからこそ、エネルギーをアップデートし続けられました。</p>
+            </div>
+            
+            <!-- カード10：まとめとアドバイス -->
+            <div class="card">
+                <h2 class="section-title"><i class="fas fa-check-double"></i>まとめとアドバイス</h2>
+                <i class="fas fa-hand-holding-heart icon-large"></i>
+                <p>今回の乙女座の満月・皆既月食は<span class="keyword"><i class="fas fa-door-open"></i>大きな変化</span>が起こりやすい時期です。</p>
+                <div class="highlight-box">
+                    <ul>
+                        <li>健康や日常の習慣を見直す絶好の機会</li>
+                        <li>混乱や遅れを焦らず、一度立ち止まる</li>
+                        <li>新しい視点や環境の変化を取り入れる</li>
+                        <li>水や芸術を活用してエネルギーを整える</li>
+                        <li>本来の自分を見つめ直す時期</li>
+                    </ul>
+                </div>
+                <div class="speech-bubble">
+                    日食・月食の時期はスピリチュアル的に深いものが開けやすい時です。焦らずに自分自身を見つめ直し、素敵な満月・皆既月食を迎えてください✨
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>グラフィックレコーディング作成日: 2025年3月14日</p>
+            <p>情報源: 乙女座の満月・皆既月食解説</p>
+        </div>
+    </div>
+</body>
+</html>
